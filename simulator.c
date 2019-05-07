@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 #define NUMMEMORY 65536 /* maximum number of words in memory */
 #define NUMREGS 8       /* number of machine registers */
 #define MAXLINELENGTH 1000
+
 typedef struct stateStruct
 {
     int pc;
@@ -12,7 +14,9 @@ typedef struct stateStruct
     int reg[NUMREGS];
     int numMemory;
 } stateType;
+
 void printState(stateType *);
+
 int main(int argc, char *argv[])
 {
     char line[MAXLINELENGTH];
@@ -30,9 +34,9 @@ int main(int argc, char *argv[])
         perror("fopen");
         exit(1);
     }
+
     /* read in the entire machine-code file into memory */
-    for (state.numMemory = 0; fgets(line, MAXLINELENGTH, filePtr) != NULL;
-         state.numMemory++)
+    for (state.numMemory = 0; fgets(line, MAXLINELENGTH, filePtr) != NULL; state.numMemory++)
     {
         if (sscanf(line, "%d", state.mem + state.numMemory) != 1)
         {
@@ -43,6 +47,7 @@ int main(int argc, char *argv[])
     }
     return (0);
 }
+
 void printState(stateType *statePtr)
 {
     int i;
