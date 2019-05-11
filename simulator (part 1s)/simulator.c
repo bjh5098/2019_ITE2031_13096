@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     {
         if (sscanf(line, "%d", state.mem + state.numMemory) != 1)
         {
-            printf("error in reading address %d\n", state.numMemory);
+            printf("error: error in reading address %d\n", state.numMemory);
             exit(1);
         }
         printf("memory[%d]=%d\n", state.numMemory, state.mem[state.numMemory]);

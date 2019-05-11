@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 
     if (inFilePtr == NULL)
     {
-        printf("error in opening %s\n", inFileString);
+        printf("error: error in opening %s\n", inFileString);
         exit(1);
     }
 
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 
     if (outFilePtr == NULL)
     {
-        printf("error in opening %s\n", outFileString);
+        printf("error: error in opening %s\n", outFileString);
         exit(1);
     }
 
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
             }
             if (same >= 2)
             {
-                printf("Duplicated!\n");
+                printf("error: Duplicated!\n");
                 exit(1);
             }
             rewind(inFilePtr2);
@@ -214,7 +214,7 @@ void check(int Offnum)
     }
     else
     {
-        printf("Overflow Offset\n");
+        printf("error: Overflow Offset\n");
         exit(1);
     }
 }
