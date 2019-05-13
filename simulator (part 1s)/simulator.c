@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define NUMMEMORY 65536 /* maximum number of words in memory */
-#define NUMREGS 8       /* number of machine registers */
+#define NUMMEMORY 65536 //메모리속 최대 word
+#define NUMREGS 8       //레지스터 수
 #define MAXLINELENGTH 1000
 
 typedef struct stateStruct
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     printf("\n");
     while (1) // keep simulate
     {
-        printState(&state); // print before executing the instruction
+        printState(&state); // 인스트럭션 실행전 출력
         disassemble(state.mem[state.pc], &opcode, &regA, &regB, &Offset);
         if (opcode == 0)//add
         {
@@ -149,7 +149,7 @@ void printState(stateType *statePtr)
 
 int convertNum(int num)
 {
-    /* convert a 16-bit number into a 32-bit Linux integer */
+    // 16비트를 32비트로 변환
     if (num & (1 << 15))
     {
         num -= (1 << 16);

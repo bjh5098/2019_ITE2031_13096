@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    //while
+    //keep reading
     while (readAndParse(inFilePtr, label, opcode, arg0, arg1, arg2))
     {
         if (strcmp(label, ""))
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
         int arg0num, arg1num, arg2num, Offnum;
         int mc;
 
-        if (!strcmp(opcode, "add"))
+        if (!strcmp(opcode, "add")) //add
         {
             opcodeBi = 0;
             arg0num = CharToNum(arg0);
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
             arg2num = CharToNum(arg2);
             Offnum = arg2num;
         }
-        else if (!strcmp(opcode, "nor"))
+        else if (!strcmp(opcode, "nor")) //nor
         {
             opcodeBi = 1;
             arg0num = CharToNum(arg0);
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
             arg2num = CharToNum(arg2);
             Offnum = arg2num;
         }
-        else if (!strcmp(opcode, "lw"))
+        else if (!strcmp(opcode, "lw")) //lw
         {
             opcodeBi = 2;
             arg0num = CharToNum(arg0);
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
                 Offnum = arg2num;
             }
         }
-        else if (!strcmp(opcode, "sw"))
+        else if (!strcmp(opcode, "sw")) //sw
         {
             opcodeBi = 3;
             arg0num = CharToNum(arg0);
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
                 Offnum = arg2num;
             }
         }
-        else if (!strcmp(opcode, "beq"))
+        else if (!strcmp(opcode, "beq")) //beq
         {
             opcodeBi = 4;
             arg0num = CharToNum(arg0);
@@ -144,14 +144,14 @@ int main(int argc, char *argv[])
                 Offnum = arg2num - PC - 1;
             }
         }
-        else if (!strcmp(opcode, "jalr"))
+        else if (!strcmp(opcode, "jalr")) //jalr
         {
             opcodeBi = 5;
             arg0num = CharToNum(arg0);
             arg1num = CharToNum(arg1);
             Offnum = 0;
         }
-        else if (!strcmp(opcode, ".fill"))
+        else if (!strcmp(opcode, ".fill")) //.fill
         {
             if (isNumber(arg0))
             {
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
                 continue;
             }
         }
-        else if (!strcmp(opcode, "halt"))
+        else if (!strcmp(opcode, "halt")) //halt
         {
             opcodeBi = 6;
             arg0num = 0;
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
             arg2num = 0;
             Offnum = arg2num;
         }
-        else if (!strcmp(opcode, "noop"))
+        else if (!strcmp(opcode, "noop")) //noop -> nothing
         {
             opcodeBi = 7;
             arg0num = 0;
@@ -187,16 +187,13 @@ int main(int argc, char *argv[])
         }
         else
         {
-            printf("error: unrecognized opcode\n%s\n", opcode);
+            printf("error: unrecognized opcode\n%s\n", opcode); //other things -> error
             exit(1);
         }
         check(Offnum);
         if (Offnum < 0)
             Offnum += 65536;
         mc = opcodeBi * 4194304 + arg0num * 524288 + arg1num * 65536 + Offnum;
-        //    fprintf(outFilePtr, "%d /%d / %d / %d\n", opcodeBi, arg0num, arg1num,
-        //        Offnum);
-
         fprintf(outFilePtr, "%d\n", mc);
         PC++;
     }
@@ -223,30 +220,27 @@ int readAndParse(FILE *inFilePtr, char *label, char *opcode, char *arg0,
 {
     char line[MAXLINELENGTH];
     char *ptr = line;
-
-    /* delete prior values */
+    //초기화
     label[0] = opcode[0] = arg0[0] = arg1[0] = arg2[0] = '\0';
-
-    /* read the line from the assembly-language file */
+    //라인 하나 읽기
     if (fgets(line, MAXLINELENGTH, inFilePtr) == NULL)
     {
-        /* reached end of file */
+        //파일 끝
         return (0);
     }
 
-    /* check for line too long (by looking for a \n) */
-    if (strchr(line, '\n') == NULL)
+    //라인 길이 체크
+    if (strchr(line, '\n') == NULL)//너무 길면?
     {
-        /* line too long */
         printf("error: line is too long\n");
         exit(1);
     }
 
-//check label
+//label 체크
     ptr = line;
-    if (sscanf(ptr, "%[^\t\n\r ]", label))
+    if (sscanf(ptr, "%[^\t\n\r ]", label))//label 읽었다면
     {
-        //success to read label, advance pointer 
+        //포인터설정
         ptr += strlen(label);
     }
 
