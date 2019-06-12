@@ -8,7 +8,7 @@
 #define MAXLINELENGTH 1000
 
 #define ADD 0
-#define NAND 1
+#define NOR 1
 #define LW 2
 #define SW 3
 #define BEQ 4
@@ -131,8 +131,8 @@ void printInstruction(int instr)
     char opcodeString[10];
     if (opcode(instr) == ADD) {
 	strcpy(opcodeString, "add");
-    } else if (opcode(instr) == NAND) {
-	strcpy(opcodeString, "nand");
+    } else if (opcode(instr) == NOR) {
+	strcpy(opcodeString, "nor");
     } else if (opcode(instr) == LW) {
 	strcpy(opcodeString, "lw");
     } else if (opcode(instr) == SW) {
@@ -182,15 +182,15 @@ int dataHazardsReg(int choose, stateType *state)
 		// else X
 	}
 			
-	if (((opcode(state->WBEND.instr) == ADD || opcode(state->WBEND.instr) == NAND)) && (field2(state->WBEND.instr) == regNum))
+	if (((opcode(state->WBEND.instr) == ADD || opcode(state->WBEND.instr) == NOR)) && (field2(state->WBEND.instr) == regNum))
 	{
 		result = state->WBEND.writeData;
 	}
-	if (((opcode(state->MEMWB.instr) == ADD || opcode(state->MEMWB.instr) == NAND)) && (field2(state->MEMWB.instr) == regNum))
+	if (((opcode(state->MEMWB.instr) == ADD || opcode(state->MEMWB.instr) == NOR)) && (field2(state->MEMWB.instr) == regNum))
 	{
 		result = state->MEMWB.writeData;
 	}
-	if (((opcode(state->EXMEM.instr) == ADD || opcode(state->EXMEM.instr) == NAND)) && (field2(state->EXMEM.instr) == regNum))
+	if (((opcode(state->EXMEM.instr) == ADD || opcode(state->EXMEM.instr) == NOR)) && (field2(state->EXMEM.instr) == regNum))
 	{
 		result = state->EXMEM.aluResult;
 	}	
@@ -222,7 +222,7 @@ void forwardRegOnHazard(stateType *state, int *reginput1, int *reginput2)//0, 0
 		if (regB == destReg)
 			*reginput2 = state->WBEND.writeData;
 	}
-	else if (prevInstr == ADD || prevInstr == NAND) 
+	else if (prevInstr == ADD || prevInstr == NOR) 
 	{
 		destReg = field2(state->WBEND.instr);
 		if (regA == destReg)
@@ -240,7 +240,7 @@ void forwardRegOnHazard(stateType *state, int *reginput1, int *reginput2)//0, 0
 		if (regB == destReg)
 			*reginput2 = state->MEMWB.writeData;
 	}
-	else if (prevInstr == ADD || prevInstr == NAND) 
+	else if (prevInstr == ADD || prevInstr == NOR) 
 	{
 		destReg = field2(state->MEMWB.instr);
 		if (regA == destReg)
@@ -250,7 +250,7 @@ void forwardRegOnHazard(stateType *state, int *reginput1, int *reginput2)//0, 0
 	}
 
 	prevInstr = opcode(state->EXMEM.instr);//noop
-	if (prevInstr == ADD || prevInstr == NAND) 
+	if (prevInstr == ADD || prevInstr == NOR) 
 	{
 		destReg = field2(state->EXMEM.instr);
 		if (regA == destReg)
@@ -416,7 +416,7 @@ int main(int argc, char *argv[])
 			int dependReg = field1(state.IDEX.instr);
 			
 			if (opcode(state.IFID.instr) == SW || opcode(state.IFID.instr) == ADD || 
-			      opcode(state.IFID.instr) == NAND || opcode(state.IFID.instr) == BEQ)
+			      opcode(state.IFID.instr) == NOR || opcode(state.IFID.instr) == BEQ)
 			{
 				if (field0(state.IFID.instr) == dependReg || field1(state.IFID.instr) == dependReg)
 				{
@@ -459,9 +459,9 @@ int main(int argc, char *argv[])
 			newState.EXMEM.aluResult = regA + regB;///////newstate.exmem.alu check
 			//printf("\talu1\n");
 		}
-		else if (opcode(state.IDEX.instr) == NAND)
+		else if (opcode(state.IDEX.instr) == NOR) // NOR calc check
 		{
-			newState.EXMEM.aluResult = ~(regA & regB);
+			newState.EXMEM.aluResult = ~(regA | regB);
 			//printf("\talu2\n");	
 		}
 		else if (opcode(state.IDEX.instr) == LW)
@@ -524,7 +524,7 @@ int main(int argc, char *argv[])
 		{
 			newState.MEMWB.writeData = state.EXMEM.aluResult;
 		}
-		else if (opcode(state.EXMEM.instr) == NAND)
+		else if (opcode(state.EXMEM.instr) == NOR) // Nor calc check
 		{
 			newState.MEMWB.writeData = state.EXMEM.aluResult;	
 		}
@@ -561,7 +561,7 @@ int main(int argc, char *argv[])
 		{
 			newState.reg[field2(state.MEMWB.instr)] = state.MEMWB.writeData;
 		}
-		else if (opcode(state.MEMWB.instr) == NAND)
+		else if (opcode(state.MEMWB.instr) == NOR)//nor calc check
 		{	
 			newState.reg[field2(state.MEMWB.instr)] = state.MEMWB.writeData;		
 		}
