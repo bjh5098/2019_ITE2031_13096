@@ -1,4 +1,4 @@
-//2015004575 Bae Jun Hyeok
+//2015004575 Bae Jun Hyeok //prepare for final exam
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
