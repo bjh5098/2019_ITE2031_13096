@@ -1,28 +1,13 @@
-	lw	0	1	start
-	lw	0	2	num
-	lw	0	3	neg1
-	noop
-	add	0	1	4
-	noop
-	noop
-	noop
-loop	add	4	5	5
-	add	1	4	4
-	add	2	3	2
-	noop
-	noop
-	noop
-	beq	0	2	7
-	noop
-	noop
-	noop
-	beq	0	0	loop
-	noop
-	noop
-	noop
-end	sw	0	5	result
-	halt
-start	.fill	1
-num	.fill	10
-neg1	.fill	-1
-result	.fill	0
+	lw	0	1	pos1
+	lw	0	3	B
+	nor	0	3	5	lw data hazard must stall
+	lw	0	2	A
+	add	2	5	4	lw data hazard must stall
+	add	4	1	4	data hazard needs forwarding
+check	beq	4	6	done	consecutive beq
+	add	1	6	6
+	beq	0	0	check	branch is always taken
+done	halt
+A	.fill	31
+B	.fill	27
+pos1	.fill	1
